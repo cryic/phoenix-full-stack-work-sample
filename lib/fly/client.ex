@@ -189,14 +189,21 @@ defmodule Fly.Client do
           processGroups {
             name
             regions
-            maxPerRegion
             vmSize {
               name
-              cpuCores
-              memoryMb
             }
           }
-          releases(last: 5) {
+          deploymentStatus {
+            id
+            status
+            version
+            description
+            placedCount
+            desiredCount
+            healthyCount
+            unhealthyCount
+          }
+          releases(first: 5) {
             totalCount
             nodes {
               version
@@ -209,6 +216,20 @@ defmodule Fly.Client do
                 avatarUrl
               }
             }
+          }
+          allocations {
+            idShort
+            version
+            status
+            desiredStatus
+            totalCheckCount
+            passingCheckCount
+            warningCheckCount
+            criticalCheckCount
+            createdAt
+            region
+            restarts
+            taskName
           }
         }
       }
