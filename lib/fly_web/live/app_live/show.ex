@@ -19,7 +19,7 @@ defmodule FlyWeb.AppLive.Show do
 
     # Only make the API call if the websocket is setup. Not on initial render.
     if connected?(socket) do
-      Process.send_after(self(), :update, :timer.seconds(30))
+      Process.send_after(self(), :update, :timer.seconds(5))
       {:ok, fetch_app(socket)}
     else
       {:ok, socket}
@@ -55,7 +55,7 @@ defmodule FlyWeb.AppLive.Show do
 
   @impl true
   def handle_info(:update, socket) do
-    Process.send_after(self(), :update, :timer.seconds(30))
+    Process.send_after(self(), :update, :timer.seconds(5))
     {:noreply, fetch_app(socket)}
   end
 
@@ -133,16 +133,9 @@ defmodule FlyWeb.AppLive.Show do
   end
 
   defp deployment_instance_counts(app) do
-    [
-      {app["deploymentStatus"]["desiredCount"], "desired"},
-      {app["deploymentStatus"]["placedCount"], "placed"},
-      {app["deploymentStatus"]["healthyCount"], "healthy"},
-      {app["deploymentStatus"]["unhealthyCount"], "unhealthy"}
-    ]
-    |> Enum.reduce([], fn {count, text}, acc ->
-      ["#{count} #{text}" | acc]
-    end)
-    |> Enum.reverse()
-    |> Enum.join(", ")
+    "#{app["deploymentStatus"]["desiredCount"]} desired, " <>
+      "#{app["deploymentStatus"]["placedCount"]} placed, " <>
+      "#{app["deploymentStatus"]["healthyCount"]} healthy, " <>
+      "#{app["deploymentStatus"]["unhealthyCount"]} unhealthy"
   end
 end
